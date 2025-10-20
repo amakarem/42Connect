@@ -168,7 +168,7 @@
                                             : '❌' %}
                                 {{ mark }} {{ project.name|default(project) }}
                                 {% if project.updated_at is defined %}
-                                    <small>(Retry: {{ project.updated_at|date('Y-m-d H:i') }})</small>
+                                    <small>(Updated: {{ project.updated_at|date('Y-m-d H:i') }})</small>
                                 {% endif %}
                             </li>
                         {% endfor %}
