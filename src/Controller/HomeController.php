@@ -3,8 +3,8 @@
 namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
 
 class HomeController extends AbstractController
 {
@@ -14,11 +14,11 @@ class HomeController extends AbstractController
         $user = $this->getUser();
 
         if (!$user) {
-            // Anonymous user: welcome page
+            // Anonymous user: show welcome page
             return $this->render('home/welcome.html.twig');
         }
 
-        // Logged-in user: dashboard
+        // Logged-in user: show dashboard
         return $this->render('home/dashboard.html.twig', [
             'user' => $user
         ]);

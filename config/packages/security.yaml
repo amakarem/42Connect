@@ -1,3 +1,4 @@
+# config/packages/security.yaml
 security:
     password_hashers:
         App\Entity\User: 'auto'
@@ -16,16 +17,21 @@ security:
         main:
             lazy: true
             provider: app_user_provider
+
+            # Use your custom OAuth2 authenticator
             custom_authenticators:
                 - App\Security\AppAuthenticator
+
+            # Set the authenticator as the entry point for login
+            entry_point: App\Security\AppAuthenticator
+
             logout:
                 path: app_logout
                 target: app_home
-            # No need for 'anonymous' or 'allow_if'
 
     access_control:
-        # Require login for everything except login routes and OAuth callback
-        - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/auth/callback, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        # All other routes require ROLE_USER
+        # Anonymous users can access home page
+        - { path: ^/$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+
+        # All other routes require login
         - { path: ^/, roles: ROLE_USER }
