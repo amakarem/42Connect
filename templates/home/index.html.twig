@@ -149,6 +149,19 @@
             </div>
         </div>
 
+        <div>
+            {% if app.user.originalVibe is empty %}
+            <div class="alert alert-warning">
+                You haven't filled your Original Vibe yet.
+            </div>
+            <a href="{{ path('vibe_fill') }}" class="btn btn-primary">
+                Fill Your Original Vibe
+            </a>
+            {% else %}
+                <p>Your Original Vibe: {{ app.user.originalVibe }}</p>
+            {% endif %}
+        </div>
+
         <!-- Projects Dashboard -->
         <div class="projects-dashboard">
             {% set groupedProjects = {} %}
