@@ -15,8 +15,8 @@ class Vibe
     #[ORM\Column(type: "string", length: 255)]
     private ?string $uid = null;
 
-    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: "vibes")]
-    #[ORM\JoinColumn(name: "user_id", referencedColumnName: "id", onDelete: "CASCADE")]
+    #[ORM\OneToOne(inversedBy: "vibe", targetEntity: User::class)]
+    #[ORM\JoinColumn(name: "user_id", referencedColumnName: "id", nullable: false, onDelete: "CASCADE")]
     private ?User $user = null;
 
     #[ORM\Column(type: "text")]

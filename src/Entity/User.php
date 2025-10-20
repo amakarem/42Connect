@@ -56,12 +56,10 @@ class User implements UserInterface//, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: "datetime_immutable", nullable: true)]
     private ?\DateTimeImmutable $updatedAt = null;
 
-    #[ORM\OneToOne(mappedBy: "user", targetEntity: Vibe::class, cascade: ["persist", "remove"])]
-    private ?Vibe $vibe = null;
 
     public function __construct()
     {
-        $this->vibes = new ArrayCollection();
+        $this->vibe = new ArrayCollection();
         $this->createdAt = new \DateTimeImmutable();
         $this->updatedAt = new \DateTimeImmutable();
     }
@@ -124,36 +122,21 @@ class User implements UserInterface//, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    // -------------------------
-    // Vibe relationship
-    // -------------------------
-    /**
-     * @return Collection|Vibe[]
-     */
-    public function getVibes(): Collection
+    #[ORM\OneToOne(mappedBy: "user", targetEntity: Vibe::class, cascade: ["persist", "remove"])]
+    private ?Vibe $vibe = null;
+
+    public function getVibe(): ?Vibe
     {
-        return $this->vibes;
+        return $this->vibe;
     }
 
-    public function addVibe(Vibe $vibe): self
+    public function setVibe(?Vibe $vibe): self
     {
-        if (!$this->vibes->contains($vibe)) {
-            $this->vibes[] = $vibe;
+        if ($vibe && $vibe->getUser() !== $this) {
             $vibe->setUser($this);
         }
-
+        $this->vibe = $vibe;
         return $this;
     }
 
-    public function removeVibe(Vibe $vibe): self
-    {
-        if ($this->vibes->removeElement($vibe)) {
-            // set the owning side to null (unless already changed)
-            if ($vibe->getUser() === $this) {
-                $vibe->setUser(null);
-            }
-        }
-
-        return $this;
-    }
 }
