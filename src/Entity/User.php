@@ -38,10 +38,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $location = null;
 
     #[ORM\Column(type: "json", nullable: true)]
-    private ?string $projects = null;
+    private ?array $projects = [];
 
     #[ORM\Column(type: "json", nullable: true)]
-    private ?string $campus = null;
+    private ?array $campus = [];
 
     // Optional: password field (not used for OAuth login)
     #[ORM\Column(type: "string", length: 255, nullable: true)]
@@ -167,23 +167,23 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getProjects(): ?string
+    public function getProjects(): ?array
     {
         return $this->projects;
     }
 
-    public function setProjects(?string $projects): self
+    public function setProjects(?array $projects): self
     {
         $this->projects = $projects;
         return $this;
     }
 
-    public function getCampus(): ?string
+    public function getCampus(): ?array
     {
         return $this->campus;
     }
 
-    public function setCampus(?string $campus): self
+    public function setCampus(?array $campus): self
     {
         $this->campus = $campus;
         return $this;
