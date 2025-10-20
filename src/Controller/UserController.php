@@ -19,13 +19,13 @@ class UserController extends AbstractController
         }
 
         // Toggle readyToHelp
-        $user->setReadyToHelp(!$user->getReadyToHelp());
+        $user->setReadyToHelp(!$user->isReadyToHelp());
         $em->flush();
 
         // If using AJAX, return JSON
         if ($request->isXmlHttpRequest()) {
             return $this->json([
-                'readyToHelp' => $user->getReadyToHelp()
+                'readyToHelp' => $user->isReadyToHelp()
             ]);
         }
 
