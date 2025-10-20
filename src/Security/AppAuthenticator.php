@@ -67,9 +67,10 @@ class AppAuthenticator extends AbstractAuthenticator
         return new RedirectResponse($this->urlGenerator->generate('app_home'));
     }
 
-    public function onAuthenticationFailure(Request $request, \Symfony\Component\Security\Core\Exception\AuthenticationException $exception)
-    {
-        // Optional: redirect to login with error
-        return new RedirectResponse($this->urlGenerator->generate('app_login'));
+    public function onAuthenticationFailure(
+        Request $request,
+        AuthenticationException $exception
+    ): ?Response {
+        // Your logic here
     }
 }
