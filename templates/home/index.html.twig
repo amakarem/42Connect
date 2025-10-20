@@ -126,6 +126,13 @@
 
             <div class="user-details">
                 <h2>{{ app.user.displayName }}</h2>
+                <p>
+                {% if app.user.isReadyToHelp() %}
+                    <span title="Ready to Help">✅</span>
+                {% else %}
+                    <span title="Not Ready to Help">❌</span>
+                {% endif %}
+                </p>
                 <p><strong>Email:</strong> {{ app.user.email }}</p>
                 <p><strong>Intra Login:</strong> {{ app.user.intraLogin }}</p>
                 <p><strong>Kind:</strong> {{ app.user.kind }}</p>

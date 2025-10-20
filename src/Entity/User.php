@@ -49,6 +49,9 @@ class User implements UserInterface//, PasswordAuthenticatedUserInterface
 
     // #[ORM\Column(type: "string", length: 255, nullable: true)]
     // private ?string $password = null;
+    
+    #[ORM\Column(type: "boolean", options: ["default" => false])]
+    private bool $readyToHelp = false;
 
     #[ORM\Column(type: "datetime_immutable", nullable: true)]
     private ?\DateTimeImmutable $updatedAt = null;
@@ -107,6 +110,19 @@ class User implements UserInterface//, PasswordAuthenticatedUserInterface
 
     public function getUpdatedAt(): ?\DateTimeImmutable { return $this->updatedAt; }
     public function setUpdatedAt(?\DateTimeImmutable $updatedAt): self { $this->updatedAt = $updatedAt; return $this; }
+
+    // Getter
+    public function isReadyToHelp(): bool
+    {
+        return $this->readyToHelp;
+    }
+
+    // Setter
+    public function setReadyToHelp(bool $readyToHelp): self
+    {
+        $this->readyToHelp = $readyToHelp;
+        return $this;
+    }
 
     // -------------------------
     // Vibe relationship
