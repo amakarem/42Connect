@@ -4,11 +4,13 @@ namespace App\Security;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Symfony\Component\Security\Http\Authenticator\AbstractAuthenticator;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Symfony\Component\Security\Core\Exception\AuthenticationException;
+use Symfony\Component\Security\Http\Authenticator\AbstractAuthenticator;
 use Symfony\Component\Security\Http\Authenticator\Passport\SelfValidatingPassport;
 use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
 
@@ -20,57 +22,78 @@ class AppAuthenticator extends AbstractAuthenticator
         private UrlGeneratorInterface $urlGenerator
     ) {}
 
+    /**
+     * Only handle requests to the OAuth callback route
+     */
+    public function supports(Request $request): ?bool
+    {
+        return $request->attributes->get('_route') === 'auth_callback';
+    }
+
+    /**
+     * Fetch OAuth token and return Passport
+     */
     public function authenticate(Request $request): SelfValidatingPassport
     {
-        // OAuth token is fetched automatically by KnpU bundle
-        $accessToken = $this->clientRegistry->getClient('forty_two')->getAccessToken();
+        $client = $this->clientRegistry->getClient('forty_two');
 
-        $userData = $this->clientRegistry->getClient('forty_two')->fetchUserFromToken($accessToken)->toArray();
+        // Get access token
+        $accessToken = $client->getAccessToken();
+
+        // Fetch user data from 42 API
+        $userData = $client->fetchUserFromToken($accessToken)->toArray();
         $email = $userData['email'] ?? null;
 
         if (!$email) {
             throw new \Exception('No email returned from 42 API');
         }
 
+        // Return passport with UserBadge
         return new SelfValidatingPassport(
-            new UserBadge($email)
+            new UserBadge($email, function () use ($userData, $email) {
+                // Check if user exists
+                $user = $this->em->getRepository(User::class)->findOneBy(['email' => $email]);
+
+                // Create user if not exists
+                if (!$user) {
+                    $user = new User();
+                    $user->setEmail($email);
+                    $user->setRoles(['ROLE_USER']);
+                    $this->em->persist($user);
+                }
+
+                // Update fields every login
+                $user->setIntraLogin($userData['login'] ?? null);
+                $user->setUsualFullName($userData['usual_full_name'] ?? null);
+                $user->setDisplayName($userData['displayname'] ?? null);
+                $user->setKind($userData['kind'] ?? null);
+                $user->setImage($userData['image']['link'] ?? null);
+                $user->setLocation($userData['location'] ?? null);
+                $user->setProjects($userData['projects'] ?? []);
+                $user->setCampus($userData['campus'] ?? []);
+
+                $this->em->flush();
+
+                return $user;
+            })
         );
     }
 
-    public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?RedirectResponse
+    /**
+     * Called after successful authentication
+     */
+    public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
-        $userData = $token->getUser()->getUserData(); // Or fetch token again if needed
-        $email = $token->getUser()->getUserIdentifier();
-
-        $user = $this->em->getRepository(User::class)->findOneBy(['email' => $email]);
-
-        if (!$user) {
-            $user = new User();
-            $user->setEmail($email);
-            $user->setRoles(['ROLE_USER']);
-            $this->em->persist($user);
-        }
-
-        // Update fields only after successful authentication
-        $user->setIntraLogin($userData['login'] ?? null);
-        $user->setUsualFullName($userData['usual_full_name'] ?? null);
-        $user->setDisplayName($userData['displayname'] ?? null);
-        $user->setKind($userData['kind'] ?? null);
-        $user->setImage($userData['image']['link'] ?? null);
-        $user->setLocation($userData['location'] ?? null);
-        $user->setProjects($userData['projects'] ?? []);
-        $user->setCampus($userData['campus'] ?? []);
-
-        $this->em->flush();
-
-        // Redirect to homepage or dashboard
+        // Redirect to home or dashboard
         return new RedirectResponse($this->urlGenerator->generate('app_home'));
     }
 
-    public function onAuthenticationFailure(
-        Request $request,
-        AuthenticationException $exception
-    ): ?Response {
-        // Your logic here
+    /**
+     * Called on authentication failure
+     */
+    public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?Response
+    {
+        // Redirect back to login with optional error message
+        return new RedirectResponse($this->urlGenerator->generate('app_login'));
     }
 }
