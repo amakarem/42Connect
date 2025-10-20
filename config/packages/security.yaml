@@ -20,6 +20,7 @@ security:
             #     - App\Security\AppAuthenticator
             logout:
                 path: app_logout
+            custom_authenticator: App\Security\AppAuthenticator
 
     access_control:
         - { path: ^/login, roles: PUBLIC_ACCESS }
