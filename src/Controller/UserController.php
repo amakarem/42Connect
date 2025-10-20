@@ -32,4 +32,22 @@ class UserController extends AbstractController
         // Otherwise redirect back to home
         return $this->redirectToRoute('app_home');
     }
+
+    #[Route('/user/update_original_vibe', name: 'user_update_original_vibe', methods: ['POST'])]
+    public function updateOriginalVibe(Request $request, EntityManagerInterface $em): JsonResponse
+    {
+        $user = $this->getUser();
+        if (!$user) {
+            return $this->json(['error' => 'Unauthorized'], 401);
+        }
+
+        $originalVibe = $request->request->get('originalVibe', '');
+        $user->setOriginalVibe($originalVibe);
+        $user->setUpdatedAt(new \DateTimeImmutable());
+
+        $em->persist($user);
+        $em->flush();
+
+        return $this->json(['success' => true, 'originalVibe' => $originalVibe]);
+    }
 }
