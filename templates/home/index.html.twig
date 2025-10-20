@@ -136,7 +136,9 @@
         <!-- Projects Dashboard -->
         <div class="projects-dashboard">
             {% set groupedProjects = {} %}
-            {% for project in app.user.projects %}
+
+            {# Group projects by status #}
+            {% for project in app.user.projects|sort((a, b) => b.retriable_at <=> a.retriable_at) %}
                 {% set status = project.status|default('Unknown') %}
                 {% if groupedProjects[status] is not defined %}
                     {% set groupedProjects = groupedProjects|merge({ (status): [project] }) %}
@@ -145,12 +147,21 @@
                 {% endif %}
             {% endfor %}
 
+            {# Display grouped projects #}
             {% for status, projects in groupedProjects %}
                 <div class="project-group">
                     <h3>{{ status|capitalize }}</h3>
                     <ul>
                         {% for project in projects %}
-                            <li>{{ project.name|default(project) }}</li>
+                            <li>
+                                {% set mark = project.status == 'completed' ? '✅' 
+                                            : project.status == 'in_progress' ? '🟡' 
+                                            : '❌' %}
+                                {{ mark }} {{ project.name|default(project) }}
+                                {% if project.retriable_at is defined %}
+                                    <small>(Retry: {{ project.retriable_at|date('Y-m-d H:i') }})</small>
+                                {% endif %}
+                            </li>
                         {% endfor %}
                     </ul>
                 </div>
@@ -158,6 +169,7 @@
                 <p>No projects found.</p>
             {% endfor %}
         </div>
+
     </div>
 </body>
 </html>
