@@ -37,6 +37,9 @@ class AppAuthenticator extends AbstractAuthenticator
         /** @var GenericResourceOwner $userData */
         $userData = $client->fetchUserFromToken($accessToken);
         $email = $userData->toArray()['email'] ?? null;
+        echo "<pre>";
+        print_r($userData->toArray());
+        die();
 
         if (!$email) {
             throw new \Exception('No email returned from 42 API');
