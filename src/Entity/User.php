@@ -4,78 +4,188 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 
 #[ORM\Entity(repositoryClass: "App\Repository\UserRepository")]
-class User implements UserInterface
+#[ORM\Table(name: '"user"')] // PostgreSQL reserved word, must be quoted
+class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
-    #[ORM\Id, ORM\GeneratedValue, ORM\Column(type:"integer")]
-    private $id;
+    #[ORM\Id, ORM\GeneratedValue, ORM\Column(type: "integer")]
+    private ?int $id = null;
 
-    #[ORM\Column(type:"string", unique:true)]
-    private $email; // Required for Symfony UserInterface
+    #[ORM\Column(type: "string", length: 255, unique: true)]
+    private ?string $email = null;
 
-    #[ORM\Column(type:"json")]
-    private $roles = [];
+    #[ORM\Column(type: "json")]
+    private array $roles = [];
 
-    // Fields from 42 API
-    #[ORM\Column(type:"string", length:255, nullable:true)]
-    private $intraLogin;
+    #[ORM\Column(type: "string", length: 255, nullable: true)]
+    private ?string $intraLogin = null;
 
-    #[ORM\Column(type:"string", length:255, nullable:true)]
-    private $usualFullName;
+    #[ORM\Column(type: "string", length: 255, nullable: true)]
+    private ?string $usualFullName = null;
 
-    #[ORM\Column(type:"string", length:255, nullable:true)]
-    private $displayName;
+    #[ORM\Column(type: "string", length: 255, nullable: true)]
+    private ?string $displayName = null;
 
-    #[ORM\Column(type:"string", length:255, nullable:true)]
-    private $kind;
+    #[ORM\Column(type: "string", length: 255, nullable: true)]
+    private ?string $kind = null;
 
-    #[ORM\Column(type:"string", length:255, nullable:true)]
-    private $image;
+    #[ORM\Column(type: "string", length: 255, nullable: true)]
+    private ?string $image = null;
 
-    #[ORM\Column(type:"string", length:255, nullable:true)]
-    private $location;
+    #[ORM\Column(type: "string", length: 255, nullable: true)]
+    private ?string $location = null;
 
-    #[ORM\Column(type:"json", nullable:true)]
-    private $projects = [];
+    #[ORM\Column(type: "json", nullable: true)]
+    private ?array $projects = [];
 
-    #[ORM\Column(type:"json", nullable:true)]
-    private $campus = [];
+    #[ORM\Column(type: "json", nullable: true)]
+    private ?array $campus = [];
 
-    // Getters & Setters
+    // Optional: password field (not used for OAuth login)
+    #[ORM\Column(type: "string", length: 255, nullable: true)]
+    private ?string $password = null;
 
-    public function getId(): ?int { return $this->id; }
-    public function getEmail(): ?string { return $this->email; }
-    public function setEmail(string $email): self { $this->email = $email; return $this; }
-    public function getRoles(): array { return $this->roles; }
-    public function setRoles(array $roles): self { $this->roles = $roles; return $this; }
+    // -------------------------
+    // Getters and setters
+    // -------------------------
 
-    public function getIntraLogin(): ?string { return $this->intraLogin; }
-    public function setIntraLogin(?string $intraLogin): self { $this->intraLogin = $intraLogin; return $this; }
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
 
-    public function getUsualFullName(): ?string { return $this->usualFullName; }
-    public function setUsualFullName(?string $name): self { $this->usualFullName = $name; return $this; }
+    public function getEmail(): ?string
+    {
+        return $this->email;
+    }
 
-    public function getDisplayName(): ?string { return $this->displayName; }
-    public function setDisplayName(?string $name): self { $this->displayName = $name; return $this; }
+    public function setEmail(string $email): self
+    {
+        $this->email = $email;
+        return $this;
+    }
 
-    public function getKind(): ?string { return $this->kind; }
-    public function setKind(?string $kind): self { $this->kind = $kind; return $this; }
+    public function getUserIdentifier(): string
+    {
+        return (string) $this->email;
+    }
 
-    public function getImage(): ?string { return $this->image; }
-    public function setImage(?string $image): self { $this->image = $image; return $this; }
+    public function getRoles(): array
+    {
+        $roles = $this->roles;
+        $roles[] = 'ROLE_USER';
+        return array_unique($roles);
+    }
 
-    public function getLocation(): ?string { return $this->location; }
-    public function setLocation(?string $location): self { $this->location = $location; return $this; }
+    public function setRoles(array $roles): self
+    {
+        $this->roles = $roles;
+        return $this;
+    }
 
-    public function getProjects(): ?array { return $this->projects; }
-    public function setProjects(?array $projects): self { $this->projects = $projects; return $this; }
+    public function getPassword(): ?string
+    {
+        return $this->password;
+    }
 
-    public function getCampus(): ?array { return $this->campus; }
-    public function setCampus(?array $campus): self { $this->campus = $campus; return $this; }
+    public function setPassword(?string $password): self
+    {
+        $this->password = $password;
+        return $this;
+    }
 
-    // Symfony UserInterface methods
-    public function getPassword(): ?string { return null; } // OAuth only
-    public function getUserIdentifier(): string { return $this->email; }
-    public function eraseCredentials(): void {}
+    public function eraseCredentials()
+    {
+        // If you store temporary sensitive data, clear it here
+    }
+
+    public function getIntraLogin(): ?string
+    {
+        return $this->intraLogin;
+    }
+
+    public function setIntraLogin(?string $intraLogin): self
+    {
+        $this->intraLogin = $intraLogin;
+        return $this;
+    }
+
+    public function getUsualFullName(): ?string
+    {
+        return $this->usualFullName;
+    }
+
+    public function setUsualFullName(?string $usualFullName): self
+    {
+        $this->usualFullName = $usualFullName;
+        return $this;
+    }
+
+    public function getDisplayName(): ?string
+    {
+        return $this->displayName;
+    }
+
+    public function setDisplayName(?string $displayName): self
+    {
+        $this->displayName = $displayName;
+        return $this;
+    }
+
+    public function getKind(): ?string
+    {
+        return $this->kind;
+    }
+
+    public function setKind(?string $kind): self
+    {
+        $this->kind = $kind;
+        return $this;
+    }
+
+    public function getImage(): ?string
+    {
+        return $this->image;
+    }
+
+    public function setImage(?string $image): self
+    {
+        $this->image = $image;
+        return $this;
+    }
+
+    public function getLocation(): ?string
+    {
+        return $this->location;
+    }
+
+    public function setLocation(?string $location): self
+    {
+        $this->location = $location;
+        return $this;
+    }
+
+    public function getProjects(): ?array
+    {
+        return $this->projects;
+    }
+
+    public function setProjects(?array $projects): self
+    {
+        $this->projects = $projects;
+        return $this;
+    }
+
+    public function getCampus(): ?array
+    {
+        return $this->campus;
+    }
+
+    public function setCampus(?array $campus): self
+    {
+        $this->campus = $campus;
+        return $this;
+    }
 }
