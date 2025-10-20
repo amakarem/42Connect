@@ -1,16 +1,20 @@
 # config/packages/security.yaml
 security:
+    # Password hashing (not used directly for OAuth, but required by Symfony)
     password_hashers:
         App\Entity\User: 'auto'
 
+    # User provider using Doctrine and the User entity
     providers:
         app_user_provider:
             entity:
                 class: App\Entity\User
                 property: email
 
+    # Firewalls define how users are authenticated
     firewalls:
         dev:
+            # Disable security for profiler/debug tools
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
 
@@ -18,20 +22,21 @@ security:
             lazy: true
             provider: app_user_provider
 
-            # Use your custom OAuth2 authenticator
-            custom_authenticators:
+            # Our custom OAuth2 authenticator
+            custom_authenticator:
                 - App\Security\AppAuthenticator
 
-            # Set the authenticator as the entry point for login
-            entry_point: App\Security\AppAuthenticator
-
+            # Logout configuration
             logout:
                 path: app_logout
-                target: app_home
+                # After logout, redirect here (optional)
+                target: app_login
 
+    # Access control rules
     access_control:
-        # Anonymous users can access home page
-        - { path: ^/$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        # Allow public access to login and OAuth callback
+        - { path: ^/login, roles: PUBLIC_ACCESS }
+        - { path: ^/auth/callback, roles: PUBLIC_ACCESS }
 
-        # All other routes require login
+        # Restrict all other routes to authenticated users
         - { path: ^/, roles: ROLE_USER }
