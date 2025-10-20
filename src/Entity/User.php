@@ -4,7 +4,7 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+// use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use App\Entity\Vibe;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -12,7 +12,7 @@ use Doctrine\Common\Collections\Collection;
 
 #[ORM\Entity(repositoryClass: "App\Repository\UserRepository")]
 #[ORM\Table(name: '"user"')] // PostgreSQL reserved word, must be quoted
-class User implements UserInterface, PasswordAuthenticatedUserInterface
+class User implements UserInterface//, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id, ORM\GeneratedValue, ORM\Column(type: "integer")]
     private ?int $id = null;
