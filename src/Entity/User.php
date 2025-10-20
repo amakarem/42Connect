@@ -44,8 +44,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: "json", nullable: true)]
     private ?array $campus = [];
 
-    #[ORM\Column(type: "string", length: 255, nullable: true)]
-    private ?string $password = null;
+    // #[ORM\Column(type: "string", length: 255, nullable: true)]
+    // private ?string $password = null;
 
     #[ORM\Column(type: "datetime_immutable", nullable: true)]
     private ?\DateTimeImmutable $updatedAt = null;
