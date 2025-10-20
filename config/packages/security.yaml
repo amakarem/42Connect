@@ -28,9 +28,10 @@ security:
 
             # Logout configuration
             logout:
-                path: app_logout
-                # After logout, redirect here (optional)
-                target: app_login
+                path: /logout          # URL, not route name
+                target: /              # Redirect after logout
+                # Allow GET for simplicity
+                invalidate_session: true
 
     # Access control rules
     access_control:

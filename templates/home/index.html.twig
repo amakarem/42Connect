@@ -112,9 +112,7 @@
     <!-- Header Bar -->
     <header>
         <h1>42 Connect Dashboard</h1>
-        <form action="{{ path('app_logout') }}" method="post">
-            <button type="submit" class="logout-btn">Logout</button>
-        </form>
+        <a href="{{ path('app_logout') }}" class="logout-btn">Logout</a>
     </header>
 
     <div class="container">
