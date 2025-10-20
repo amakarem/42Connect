@@ -172,18 +172,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->projects;
     }
 
-    public function setProjects(?array $projects): self
+    public function setProjects(?string $projects): self
     {
         $this->projects = $projects;
         return $this;
     }
 
-    public function getCampus(): ?array
+    public function getCampus(): ?string
     {
         return $this->campus;
     }
 
-    public function setCampus(?array $campus): self
+    public function setCampus(?string $campus): self
     {
         $this->campus = $campus;
         return $this;

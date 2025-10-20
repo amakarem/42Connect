@@ -74,7 +74,7 @@ class AppAuthenticator extends AbstractAuthenticator
                     foreach ($userData['projects_users'] as $project) {
                         $projects[] = ["name" =>$project["project"]["name"], "status" => $project["status"]];
                     }
-                    $user->setProjects($projects);
+                    $user->setProjects(json_encode($projects));
                 }
                 $user->setCampus($userData['campus'][0]['name'] ?? []);
 
