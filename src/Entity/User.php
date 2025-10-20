@@ -38,10 +38,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $location = null;
 
     #[ORM\Column(type: "json", nullable: true)]
-    private ?array $projects = [];
+    private ?string $projects = null;
 
     #[ORM\Column(type: "json", nullable: true)]
-    private ?array $campus = [];
+    private ?string $campus = null;
 
     // Optional: password field (not used for OAuth login)
     #[ORM\Column(type: "string", length: 255, nullable: true)]
