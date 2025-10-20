@@ -19,7 +19,7 @@ class HomeController extends AbstractController
         }
 
         // Logged-in user: show dashboard
-        return $this->render('home/dashboard.html.twig', [
+        return $this->render('home/index.html.twig', [
             'user' => $user
         ]);
     }
