@@ -129,23 +129,16 @@
                 <p><strong>Email:</strong> {{ app.user.email }}</p>
                 <p><strong>Intra Login:</strong> {{ app.user.intraLogin }}</p>
                 <p><strong>Kind:</strong> {{ app.user.kind }}</p>
-                <p><strong>Location:</strong>{{ app.user.location }}</p>
+                <p>
+                    <strong>Location:</strong> {{ app.user.location }}
                     {% if app.user.campus is not empty %}
-        <p><strong>Campus:</strong></p>
-        <ul>
-            {% for c in app.user.campus %}
-                <li>
-                    {{ c.name|default('Unknown') }} 
-                    {% if c.time_zone is defined %}
-                        ({{ c.time_zone }})
+                        {% set firstCampus = app.user.campus|first %}
+                        - {{ firstCampus.name|default('Unknown') }}
+                        {% if firstCampus.time_zone is defined %}
+                            ({{ firstCampus.time_zone }})
+                        {% endif %}
                     {% endif %}
-                </li>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <p><strong>Campus:</strong> None</p>
-    {% endif %}
-    
+                </p>
             </div>
         </div>
 
