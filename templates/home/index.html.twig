@@ -163,16 +163,18 @@
                     <ul>
                         {% for project in projects %}
                             <li>
-                                {% set mark = project.status == 'finished' ? '✅' 
-                                            : project.status == 'in_progress' ? '🟡' 
-                                            : '❌' %}
+                                {% set mark = '❌' %}
+                                {% if project.status == 'finished' and project.final_mark is defined and project.final_mark >= 40 %}
+                                    {% set mark = '✅' %}
+                                {% elseif project.status == 'in_progress' %}
+                                    {% set mark = '🟡' %}
+                                {% endif %}
                                 {{ mark }} {{ project.name|default(project) }}
                                 {% if project.final_mark is defined and project.final_mark is not null %}
                                     <span>— Mark: {{ project.final_mark }}</span>
                                 {% endif %}
                                 {% if project.updated_at is defined %}
                                     <small>(Updated: {{ project.updated_at|date('Y-m-d H:i') }})</small>
-                                    -- {{ project.status }}
                                 {% endif %}
                             </li>
                         {% endfor %}
