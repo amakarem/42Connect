@@ -167,8 +167,8 @@
                                             : project.status == 'in_progress' ? '🟡' 
                                             : '❌' %}
                                 {{ mark }} {{ project.name|default(project) }}
-                                {% if project.mark }
-                                 { project.mark }
+                                {% if project.final_mark }
+                                    { project.final_mark }
                                 {% endif %}
                                 {% if project.updated_at is defined %}
                                     <small>(Updated: {{ project.updated_at|date('Y-m-d H:i') }})</small>
