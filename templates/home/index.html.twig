@@ -154,7 +154,7 @@
                     <ul>
                         {% for project in projects %}
                             <li>
-                                {% set mark = project.status == 'completed' ? '✅' 
+                                {% set mark = project.status == 'finished' ? '✅' 
                                             : project.status == 'in_progress' ? '🟡' 
                                             : '❌' %}
                                 {{ mark }} {{ project.name|default(project) }}
