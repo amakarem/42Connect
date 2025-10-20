@@ -31,6 +31,7 @@ final class Version20251020171547 extends AbstractMigration
             campus JSON DEFAULT NULL,
             created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
             updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+            ready_to_help BOOLEAN DEFAULT FALSE NOT NULL,
             PRIMARY KEY(id)
         )');
 
