@@ -156,7 +156,8 @@
                 <div class="alert alert-warning">
                     You haven't filled your Original Vibe yet.
                 </div>
-                <a href="{{ path('vibe_fill') }}" class="btn btn-primary">Fill Your Original Vibe</a>
+                    <textarea id="originalVibe" rows="3" class="form-control">{{ app.user.vibe.originalVibe }}</textarea>
+                    <button id="saveOriginalVibe" class="btn btn-success mt-2">Save</button>
             {% endif %}
 
             <div id="vibeMessage" class="mt-2"></div>
