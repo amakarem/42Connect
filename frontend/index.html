@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>42Connect Vibes</title>
+    <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+<main class="container">
+    <header>
+        <h1>42Connect Vibes</h1>
+        <p>Simple standalone frontend for the FastAPI backend.</p>
+        <div class="auth-status" id="auth-status">
+            <span class="auth-user" id="auth-user">Checking session…</span>
+            <button id="login-btn" class="auth-link">Sign in with 42</button>
+            <button id="logout-btn" class="auth-link auth-link--danger" hidden>Log out</button>
+        </div>
+    </header>
+
+    <section>
+        <div class="flash flash--success" id="flash-success" hidden></div>
+        <div class="flash flash--error" id="flash-error" hidden></div>
+    </section>
+
+    <section class="card">
+        <h2>Add or Update Vibe</h2>
+        <form id="create-form" class="form-grid">
+            <label>
+                UID
+                <input type="text" id="uid-input" name="uid" required>
+            </label>
+            <label class="textarea-label">
+                Vibe
+                <textarea id="vibe-input" name="vibe_text" rows="4" placeholder="Describe the vibe..." required></textarea>
+            </label>
+            <button type="submit">Save Vibe</button>
+        </form>
+    </section>
+
+    <section class="card">
+        <h2>Search Vibes</h2>
+        <form id="search-form" class="search-form">
+            <input type="text" id="search-query" placeholder="Search by vibe description..." required>
+            <input type="number" id="search-top-k" value="5" min="1" max="50">
+            <button type="submit">Search</button>
+        </form>
+        <div class="results" id="search-results" hidden>
+            <h3 id="results-heading">Results</h3>
+            <ul id="results-list"></ul>
+        </div>
+    </section>
+
+    <section class="card">
+        <h2>Recently Updated Vibes</h2>
+        <ul class="vibe-list" id="vibe-list"></ul>
+        <p id="no-vibes" hidden>No vibes stored yet. Add one above to get started.</p>
+    </section>
+</main>
+
+<script type="module" src="./app.js"></script>
+</body>
+</html>

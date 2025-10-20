@@ -1,20 +1,13 @@
+# Python cache files
+__pycache__/
+*.py[cod]
+*.so
 
-###> symfony/framework-bundle ###
-/.env.local
-/.env.local.php
-/.env.*.local
-/config/secrets/prod/prod.decrypt.private.php
-/public/bundles/
-/var/
-/vendor/
-###< symfony/framework-bundle ###
+# Virtual environments
+.venv/
+backend/.venv/
 
-###> phpunit/phpunit ###
-/phpunit.xml
-/.phpunit.cache/
-###< phpunit/phpunit ###
-
-###> symfony/asset-mapper ###
-/public/assets/
-/assets/vendor/
-###< symfony/asset-mapper ###
+# Editor and OS cruft
+.DS_Store
+.idea/
+.vscode/
