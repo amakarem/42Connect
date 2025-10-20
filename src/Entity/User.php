@@ -44,8 +44,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?array $campus = [];
 
     // Optional: password field (not used for OAuth login)
-    // #[ORM\Column(type: "string", length: 255, nullable: true)]
-    // private ?string $password = null;
+    #[ORM\Column(type: "string", length: 255, nullable: true)]
+    private ?string $password = null;
 
     // -------------------------
     // Getters and setters
@@ -85,16 +85,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    // public function getPassword(): ?string
-    // {
-    //     return $this->password;
-    // }
+    public function getPassword(): ?string
+    {
+        return $this->password;
+    }
 
-    // public function setPassword(?string $password): self
-    // {
-    //     $this->password = $password;
-    //     return $this;
-    // }
+    public function setPassword(?string $password): self
+    {
+        $this->password = $password;
+        return $this;
+    }
 
     public function eraseCredentials(): void
     {
