@@ -40,4 +40,4 @@ security:
         - { path: ^/auth/callback, roles: PUBLIC_ACCESS }
 
         # Restrict all other routes to authenticated users
-        - { path: ^/, roles: ROLE_USER }
+        - { path: ^/, roles: PUBLIC_ACCESS }
