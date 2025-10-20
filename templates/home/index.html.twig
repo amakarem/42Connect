@@ -138,7 +138,7 @@
             {% set groupedProjects = {} %}
 
             {# Group projects by status #}
-            {% for project in app.user.projects|sort((a, b) => b.retriable_at <=> a.retriable_at) %}
+            {% for project in app.user.projects|sort((a, b) => b.updated_at <=> a.updated_at) %}
                 {% set status = project.status|default('Unknown') %}
                 {% if groupedProjects[status] is not defined %}
                     {% set groupedProjects = groupedProjects|merge({ (status): [project] }) %}
@@ -158,8 +158,8 @@
                                             : project.status == 'in_progress' ? '🟡' 
                                             : '❌' %}
                                 {{ mark }} {{ project.name|default(project) }}
-                                {% if project.retriable_at is defined %}
-                                    <small>(Retry: {{ project.retriable_at|date('Y-m-d H:i') }})</small>
+                                {% if project.updated_at is defined %}
+                                    <small>(Retry: {{ project.updated_at|date('Y-m-d H:i') }})</small>
                                 {% endif %}
                             </li>
                         {% endfor %}
