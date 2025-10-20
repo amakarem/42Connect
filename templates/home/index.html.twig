@@ -127,11 +127,9 @@
             <div class="user-details">
                 <h2>{{ app.user.displayName }}</h2>
                 <p>
-                {% if app.user.isReadyToHelp() %}
-                    <span title="Ready to Help">Ready to Help ✅</span>
-                {% else %}
-                    <span title="Not Ready to Help">Not Ready to Help ❌</span>
-                {% endif %}
+                <button id="toggleReady" class="btn btn-sm btn-outline-primary">
+                    {% if app.user.readyToHelp %}✅ Ready to Help{% else %}❌ Not Ready{% endif %}
+                </button>
                 </p>
                 <p><strong>Email:</strong> {{ app.user.email }}</p>
                 <p><strong>Intra Login:</strong> {{ app.user.intraLogin }}</p>
@@ -208,3 +206,15 @@
     </div>
 </body>
 </html>
+<script>
+document.getElementById('toggleReady').addEventListener('click', function() {
+    fetch('{{ path('user_toggle_ready') }}', {
+        method: 'POST',
+        headers: { 'X-Requested-With': 'XMLHttpRequest' }
+    })
+    .then(res => res.json())
+    .then(data => {
+        this.textContent = data.readyToHelp ? '✅ Ready to Help' : '❌ Not Ready';
+    });
+});
+</script>
