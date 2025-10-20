@@ -67,10 +67,16 @@ class AppAuthenticator extends AbstractAuthenticator
                 $user->setUsualFullName($userData['usual_full_name'] ?? null);
                 $user->setDisplayName($userData['displayname'] ?? null);
                 $user->setKind($userData['kind'] ?? null);
-                $user->setImage($userData['image']['link'] ?? null);
+                $user->setImage($userData['image']['link']['versions']['large'] ?? null);
                 $user->setLocation($userData['location'] ?? null);
-                $user->setProjects($userData['projects'] ?? []);
-                $user->setCampus($userData['campus'] ?? []);
+                if (isset($userData['projects_users']) && is_array($userData['projects_users'])) {
+                    $projects = [];
+                    foreach ($userData['projects_users'] as $project) {
+                        $projects[] = ["name" =>$project["project"]["name"], "status" => $project["status"]];
+                    }
+                    $user->setProjects(json_encode($projects));
+                }
+                $user->setCampus($userData['campus'][0]['name'] ?? []);
 
                 $this->em->flush();
 
