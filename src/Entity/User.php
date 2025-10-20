@@ -55,6 +55,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function __construct()
     {
+        $this->vibes = new ArrayCollection();
+        $this->createdAt = new \DateTimeImmutable();
         $this->updatedAt = new \DateTimeImmutable();
     }
 
@@ -106,14 +108,33 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     // -------------------------
     // Vibe relationship
     // -------------------------
-    public function getVibe(): ?Vibe { return $this->vibe; }
-
-    public function setVibe(?Vibe $vibe): self
+    /**
+     * @return Collection|Vibe[]
+     */
+    public function getVibes(): Collection
     {
-        $this->vibe = $vibe;
-        if ($vibe && $vibe->getUser() !== $this) {
+        return $this->vibes;
+    }
+
+    public function addVibe(Vibe $vibe): self
+    {
+        if (!$this->vibes->contains($vibe)) {
+            $this->vibes[] = $vibe;
             $vibe->setUser($this);
         }
+
+        return $this;
+    }
+
+    public function removeVibe(Vibe $vibe): self
+    {
+        if ($this->vibes->removeElement($vibe)) {
+            // set the owning side to null (unless already changed)
+            if ($vibe->getUser() === $this) {
+                $vibe->setUser(null);
+            }
+        }
+
         return $this;
     }
 }
