@@ -1,44 +1,66 @@
 <?php
-
 namespace App\Security;
 
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
-use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Http\Authenticator\AbstractAuthenticator;
-use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
+use Symfony\Component\Security\Http\Authenticator\Passport\SelfValidatingPassport;
+use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Doctrine\ORM\EntityManagerInterface;
+use App\Entity\User;
+use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
+use League\OAuth2\Client\Provider\GenericResourceOwner;
 
 class AppAuthenticator extends AbstractAuthenticator
 {
+    public function __construct(
+        private EntityManagerInterface $em,
+        private UrlGeneratorInterface $urlGenerator,
+        private ClientRegistry $clientRegistry
+    ) {}
+
     public function supports(Request $request): ?bool
     {
-        // TODO: Implement supports() method.
+        return $request->attributes->get('_route') === 'auth_callback';
     }
 
-    public function authenticate(Request $request): Passport
+    public function authenticate(Request $request)
     {
-        // TODO: Implement authenticate() method.
+        $client = $this->clientRegistry->getClient('forty_two');
+
+        // Get access token using the authorization code
+        $accessToken = $client->getAccessToken();
+
+        /** @var GenericResourceOwner $userData */
+        $userData = $client->fetchUserFromToken($accessToken);
+        $email = $userData->toArray()['email'] ?? null;
+
+        if (!$email) {
+            throw new \Exception('No email returned from 42 API');
+        }
+
+        // Find or create user
+        $user = $this->em->getRepository(User::class)->findOneBy(['email' => $email]);
+        if (!$user) {
+            $user = new User();
+            $user->setEmail($email);
+            $user->setRoles(['ROLE_USER']);
+            $this->em->persist($user);
+            $this->em->flush();
+        }
+
+        return new SelfValidatingPassport(new UserBadge($email, fn() => $user));
     }
 
-    public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
+    public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?RedirectResponse
     {
-        // TODO: Implement onAuthenticationSuccess() method.
+        return new RedirectResponse($this->urlGenerator->generate('app_home'));
     }
 
-    public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?Response
+    public function onAuthenticationFailure(Request $request, \Throwable $exception): ?RedirectResponse
     {
-        // TODO: Implement onAuthenticationFailure() method.
+        return new RedirectResponse($this->urlGenerator->generate('app_login'));
     }
-
-    //    public function start(Request $request, ?AuthenticationException $authException = null): Response
-    //    {
-    //        /*
-    //         * If you would like this class to control what happens when an anonymous user accesses a
-    //         * protected page (e.g. redirect to /login), uncomment this method and make this class
-    //         * implement Symfony\Component\Security\Http\EntryPoint\AuthenticationEntryPointInterface.
-    //         *
-    //         * For more details, see https://symfony.com/doc/current/security/experimental_authenticators.html#configuring-the-authentication-entry-point
-    //         */
-    //    }
 }
