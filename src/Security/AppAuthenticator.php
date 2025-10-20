@@ -2,6 +2,7 @@
 namespace App\Security;
 
 use App\Entity\User;
+use App\Service\VibeProfileManager;
 use Doctrine\ORM\EntityManagerInterface;
 use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,7 +20,8 @@ class AppAuthenticator extends AbstractAuthenticator
     public function __construct(
         private ClientRegistry $clientRegistry,
         private EntityManagerInterface $em,
-        private UrlGeneratorInterface $urlGenerator
+        private UrlGeneratorInterface $urlGenerator,
+        private VibeProfileManager $vibeProfileManager,
     ) {}
 
     /**
@@ -80,6 +82,7 @@ class AppAuthenticator extends AbstractAuthenticator
                 $user->setCampus($userData['campus'] ?? []);
 
                 $this->em->flush();
+                $this->vibeProfileManager->provisionForUser($user);
 
                 return $user;
             })
