@@ -72,6 +72,7 @@ class AppAuthenticator extends AbstractAuthenticator
                 if (isset($userData['projects_users']) && is_array($userData['projects_users'])) {
                     $projects = [];
                     foreach ($userData['projects_users'] as $project) {
+                        if ($project['validated?'] == 1 && $project["status"] == 'in_progress') $project["status"] = 'finished';
                         $projects[] = ["name" =>$project["project"]["name"], "status" => $project["status"], "updated_at" => $project["updated_at"], "final_mark" => $project["final_mark"]];
                     }
                     $user->setProjects($projects);
