@@ -51,6 +51,19 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     // Getters and setters
     // -------------------------
 
+    private ?\DateTimeInterface $updatedAt = null;
+
+    public function getUpdatedAt(): ?\DateTimeInterface
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(?\DateTimeInterface $updatedAt): self
+    {
+        $this->updatedAt = $updatedAt;
+        return $this;
+    }
+
     public function getId(): ?int
     {
         return $this->id;
