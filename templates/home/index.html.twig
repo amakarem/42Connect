@@ -222,28 +222,32 @@ document.getElementById('toggleReady').addEventListener('click', function() {
 });
 
 document.getElementById('saveOriginalVibe').addEventListener('click', function() {
-    const vibe = document.getElementById('originalVibe').value;
+    const originalVibe = document.getElementById('originalVibe').value;
 
-    fetch('{{ path('user_update_original_vibe') }}', {
+    fetch('{{ path("user_update_original_vibe") }}', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
             'X-Requested-With': 'XMLHttpRequest',
-            'X-CSRF-TOKEN': '{{ csrf_token('update_original_vibe') }}'
+            'X-CSRF-TOKEN': '{{ csrf_token("update_original_vibe") }}'
         },
-        body: new URLSearchParams({originalVibe: vibe})
+        body: new URLSearchParams({
+            originalVibe: originalVibe
+        })
     })
     .then(response => response.json())
     .then(data => {
-        const msg = document.getElementById('vibeMessage');
-        if (data.success) {
-            msg.innerHTML = '<span class="text-success">Saved successfully!</span>';
+        const messageDiv = document.getElementById('vibeMessage');
+        if (data.status === 'success') {
+            messageDiv.innerHTML = '<span class="text-success">Saved successfully!</span>';
         } else {
-            msg.innerHTML = '<span class="text-danger">Error saving.</span>';
+            messageDiv.innerHTML = '<span class="text-danger">Error saving.</span>';
         }
     })
-    .catch(() => {
+    .catch(err => {
         document.getElementById('vibeMessage').innerHTML = '<span class="text-danger">Error saving.</span>';
+        console.error(err);
     });
 });
+
 </script>

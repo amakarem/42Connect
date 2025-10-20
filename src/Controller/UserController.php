@@ -6,6 +6,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 
 class UserController extends AbstractController
@@ -41,13 +42,20 @@ class UserController extends AbstractController
             return $this->json(['error' => 'Unauthorized'], 401);
         }
 
-        $originalVibe = $request->request->get('originalVibe', '');
-        $user->setOriginalVibe($originalVibe);
-        $user->setUpdatedAt(new \DateTimeImmutable());
+        $originalVibeText = $request->request->get('originalVibe', '');
 
-        $em->persist($user);
+        $vibe = $user->getVibe(); // You need a getVibe() method in User
+        if (!$vibe) {
+            $vibe = new \App\Entity\Vibe();
+            $vibe->setUser($user);
+        }
+
+        $vibe->setOriginalVibe($originalVibeText);
+        $vibe->setUpdatedAt(new \DateTimeImmutable());
+
+        $em->persist($vibe);
         $em->flush();
 
-        return $this->json(['success' => true, 'originalVibe' => $originalVibe]);
+        return $this->json(['status' => 'success', 'originalVibe' => $originalVibeText]);
     }
 }
