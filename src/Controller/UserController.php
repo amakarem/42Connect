@@ -42,20 +42,27 @@ class UserController extends AbstractController
             return $this->json(['error' => 'Unauthorized'], 401);
         }
 
-        $originalVibeText = $request->request->get('originalVibe', '');
+        $originalVibe = $request->request->get('originalVibe', '');
 
-        $vibe = $user->getVibe(); // You need a getVibe() method in User
+        // Check if user already has a Vibe, otherwise create a new one
+        $vibe = $user->getVibe();
         if (!$vibe) {
             $vibe = new \App\Entity\Vibe();
+            $vibe->setUid(\Symfony\Component\Uid\Uuid::v4()->toRfc4122()); // assign UUID
             $vibe->setUser($user);
+            $user->setVibe($vibe);
+            $em->persist($vibe);
         }
 
-        $vibe->setOriginalVibe($originalVibeText);
+        $vibe->setOriginalVibe($originalVibe);
         $vibe->setUpdatedAt(new \DateTimeImmutable());
 
-        $em->persist($vibe);
         $em->flush();
 
-        return $this->json(['status' => 'success', 'originalVibe' => $originalVibeText]);
+        return $this->json([
+            'status' => 'success',
+            'originalVibe' => $originalVibe
+        ]);
     }
+
 }
