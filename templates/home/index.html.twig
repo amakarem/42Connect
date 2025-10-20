@@ -148,11 +148,16 @@
         </div>
 
         <div>
-            {% set originalVibe = app.user.originalVibe %}
-            <label for="originalVibe">Original Vibe:</label>
-
-            <textarea id="originalVibe" rows="3" class="form-control">{{ originalVibe }}</textarea>
-            <button id="saveOriginalVibe" class="btn btn-success mt-2">Save</button>
+            {% if app.user.vibe is not null %}
+                <label for="originalVibe">Original Vibe:</label>
+                <textarea id="originalVibe" rows="3" class="form-control">{{ app.user.vibe.originalVibe }}</textarea>
+                <button id="saveOriginalVibe" class="btn btn-success mt-2">Save</button>
+            {% else %}
+                <div class="alert alert-warning">
+                    You haven't filled your Original Vibe yet.
+                </div>
+                <a href="{{ path('vibe_fill') }}" class="btn btn-primary">Fill Your Original Vibe</a>
+            {% endif %}
 
             <div id="vibeMessage" class="mt-2"></div>
         </div>
