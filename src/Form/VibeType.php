@@ -15,10 +15,6 @@ class VibeType extends AbstractType
         $builder
             ->add('originalVibe', TextareaType::class, [
                 'label' => 'Your original vibe',
-            ])
-            ->add('vibe', TextareaType::class, [
-                'label' => 'Your vibe',
-                'required' => false,
             ]);
     }
 
