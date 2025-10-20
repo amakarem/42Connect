@@ -22,6 +22,9 @@ security:
             lazy: true
             provider: app_user_provider
 
+            # Allow anonymous users (important!)
+            anonymous: true
+
             # Our custom OAuth2 authenticator
             custom_authenticator:
                 - App\Security\AppAuthenticator
@@ -29,14 +32,16 @@ security:
             # Logout configuration
             logout:
                 path: app_logout
-                # After logout, redirect here (optional)
-                target: app_login
+                target: app_home
 
     # Access control rules
     access_control:
-        # Allow public access to login and OAuth callback
-        - { path: ^/login, roles: PUBLIC_ACCESS }
-        - { path: ^/auth/callback, roles: PUBLIC_ACCESS }
+        # Allow anonymous access to the home page (welcome page)
+        - { path: ^/$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
 
-        # Restrict all other routes to authenticated users
+        # Allow public access to login and OAuth callback
+        - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/auth/callback, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+
+        # Require login for all other routes
         - { path: ^/, roles: ROLE_USER }
