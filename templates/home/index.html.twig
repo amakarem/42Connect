@@ -150,7 +150,7 @@
         </div>
 
         <div>
-            {% if app.user.originalVibe is empty %}
+            {% if app.user.vibe is empty or app.user.vibe.originalVibe is empty %}
             <div class="alert alert-warning">
                 You haven't filled your Original Vibe yet.
             </div>
@@ -158,7 +158,7 @@
                 Fill Your Original Vibe
             </a>
             {% else %}
-                <p>Your Original Vibe: {{ app.user.originalVibe }}</p>
+                <p>Your Original Vibe: {{ app.user.vibe.originalVibe }}</p>
             {% endif %}
         </div>
 
