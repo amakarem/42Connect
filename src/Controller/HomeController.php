@@ -14,11 +14,11 @@ class HomeController extends AbstractController
         $user = $this->getUser();
 
         if (!$user) {
-            // Anonymous user: show welcome page
+            // Anonymous user: welcome page
             return $this->render('home/welcome.html.twig');
         }
 
-        // Logged-in user: show dashboard
+        // Logged-in user: dashboard
         return $this->render('home/dashboard.html.twig', [
             'user' => $user
         ]);

@@ -1,17 +1,13 @@
-# config/packages/security.yaml
 security:
-    # Password hashing
     password_hashers:
         App\Entity\User: 'auto'
 
-    # User provider
     providers:
         app_user_provider:
             entity:
                 class: App\Entity\User
                 property: email
 
-    # Firewalls
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
@@ -25,15 +21,11 @@ security:
             logout:
                 path: app_logout
                 target: app_home
+            # No need for 'anonymous' or 'allow_if'
 
-    # Access control
     access_control:
-        # Anonymous access to home page
-        - { path: ^/$, allow_if: "is_granted('IS_AUTHENTICATED_ANONYMOUSLY')" }
-
-        # Anonymous access to login & callback
-        - { path: ^/login, allow_if: "is_granted('IS_AUTHENTICATED_ANONYMOUSLY')" }
-        - { path: ^/auth/callback, allow_if: "is_granted('IS_AUTHENTICATED_ANONYMOUSLY')" }
-
-        # Require login for all other routes
+        # Require login for everything except login routes and OAuth callback
+        - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/auth/callback, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        # All other routes require ROLE_USER
         - { path: ^/, roles: ROLE_USER }
