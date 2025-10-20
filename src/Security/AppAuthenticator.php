@@ -12,6 +12,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\User;
 use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
 use League\OAuth2\Client\Provider\GenericResourceOwner;
+use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
 
 class AppAuthenticator extends AbstractAuthenticator
 {
@@ -26,11 +27,11 @@ class AppAuthenticator extends AbstractAuthenticator
         return $request->attributes->get('_route') === 'auth_callback';
     }
 
-    public function authenticate(Request $request)
+    // ⚠ Correct signature
+    public function authenticate(Request $request): Passport
     {
         $client = $this->clientRegistry->getClient('forty_two');
 
-        // Get access token using the authorization code
         $accessToken = $client->getAccessToken();
 
         /** @var GenericResourceOwner $userData */
